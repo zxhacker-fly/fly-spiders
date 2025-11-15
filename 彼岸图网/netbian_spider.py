@@ -13,7 +13,8 @@ def make_url(page):
     http://www.netbian.com/weimei/index_3.htm
     http://www.netbian.com/weimei/index_4.htm
     """
-    base_url = 'http://www.netbian.com/weimei'
+    # base_url = 'http://www.netbian.com/weimei' # 唯美
+    base_url = 'http://www.netbian.com/meinv' # 美女
     if page == 1:
         return f'{base_url}/index.htm'
     else:
@@ -42,7 +43,7 @@ def parse_page(content):
         detail_url = 'http://www.netbian.com' + item.css('a::attr(href)').get()
         # 确保链接是以.htm结尾的壁纸详情页链接
         if title and detail_url and detail_url.strip().endswith('.htm'):
-            image_info_list.append({'title': title.replace(" ","_"), 'detail_url': detail_url})
+            image_info_list.append({'title': title, 'detail_url': detail_url})
     return image_info_list
 
 
@@ -61,6 +62,13 @@ def get_image_download_link(detail_url):
     return img_url
 
 
+# 格式化文件名
+def format_filename(name):
+    invalid_chars = ['<', '>', ':', '"', '/', '\\', '|', '?', '*']
+    for char in invalid_chars:
+        name = name.replace(char, '_')
+    return name
+
 # 下载图片
 def down_image(img_url, title):
     """
@@ -68,13 +76,13 @@ def down_image(img_url, title):
     :param title: 图片标题
     :return:
     """
-    base_dir = 'images'
+    base_dir = 'images/meinv'
     if not os.path.exists(base_dir):
         os.makedirs(base_dir)
     response = requests.get(img_url, headers=random_headers())
-    with open(f'{base_dir}/{title}.jpg', 'wb') as f:
+    with open(f'{base_dir}/{format_filename(title)}.jpg', 'wb') as f:
         f.write(response.content)
-    print(f'Downloaded image: {title}')
+    print(f'Downloaded image: {format_filename(title)}')
 
 # 主函数
 def run(start_page=1, end_page=5):
@@ -101,4 +109,4 @@ def run(start_page=1, end_page=5):
             down_image(img_download_link,title)
             
 if __name__ == '__main__':
-    run(65,68)
+    run(15,100)
