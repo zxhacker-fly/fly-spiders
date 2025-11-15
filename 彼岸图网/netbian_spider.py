@@ -85,13 +85,14 @@ def run(start_page=1, end_page=5):
     """
     for page in range(start_page,end_page):
         url = make_url(page)
-        if not url:
-            break
         page_content = get_page_content(url)
         time.sleep(page) # 避免请求过于频繁
         print(f'Fetched page: {url}')
         images = parse_page(page_content)
         print(f'Fetched {len(images)} images')
+        if not images:
+            print("No images found, stop.")
+            break
         for image in images:
             title = image['title']
             detail_url = image['detail_url']
@@ -100,4 +101,4 @@ def run(start_page=1, end_page=5):
             down_image(img_download_link,title)
             
 if __name__ == '__main__':
-    run(9,65)
+    run(65,68)
